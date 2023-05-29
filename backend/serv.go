@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -13,14 +14,14 @@ import (
 )
 
 type Asso struct {
-    ID     int64    `json:"id"`
+    ID     int    `json:"id"`
     Name   string   `json:"name"`
     Desc   string   `json:"description"`
 }
 
 type Time struct {
-    ID              int64    `json:"id"`
-    Activity_ID     int64     `json:"activity_id"`
+    ID              int    `json:"id"`
+    Activity_ID     int     `json:"activity_id"`
     Debut           string   `json:"debut"`
     Fin             string   `json:"fin"`
 }
@@ -29,7 +30,7 @@ type Activi struct {
     ID     int64    `json:"id"`
     Name   string   `json:"name"`
     Desc   string   `json:"description"`
-    Asso_Id int64   `json:"asso"`
+    Asso_Id int   `json:"asso"`
     Place   int     `json:"places"`
 }
 
@@ -104,9 +105,38 @@ func getTime(c *gin.Context) {
 }
 
 
+func getTime_by_activity(c *gin.Context) {
+    var activity []Activi
+    id, _:= strconv.Atoi(c.Param("id"))
+
+    rows, err := db.Query("SELECT * FROM activite")
+    if err != nil {
+        return
+    }
+    defer rows.Close()
+    // Loop through rows, using Scan to assign column data to struct fields.
+    for rows.Next() {
+        var tmp Activi
+        if err := rows.Scan(&tmp.ID, &tmp.Name, &tmp.Desc, &tmp.Asso_Id, &tmp.Place); err != nil {
+            return
+        }
+        activity = append(activity, tmp)
+    }
+    if err := rows.Err(); err != nil {
+        return
+    }
+        for _, a := range activity {
+        if a.Asso_Id == id {
+            c.IndentedJSON(http.StatusOK, a)
+            return
+        }
+    }
+    return
+}
+
 var db *sql.DB
 
-func connectDb ()(error)  {
+func connectDb (){
     cfg := mysql.Config{
         User:   os.Getenv("DBUSER"),
         Passwd: os.Getenv("DBPASS"),
@@ -120,29 +150,25 @@ func connectDb ()(error)  {
     db, err = sql.Open("mysql", cfg.FormatDSN())
     if err != nil {
         log.Fatal(err)
-        return err
+        os.Exit(1)
     }
     err = db.Ping()
     if err != nil {
         log.Fatal(err)
-        return err
+        os.Exit(2)
     }
     fmt.Println("Connected!")
-    return nil
+    return
 }
 
 func main() {
+    time.Sleep(10)
     // gin.SetMode(gin.ReleaseMode)
     router := gin.Default()
-    for i:=0; i < 5; i++ {
-        err := connectDb()
-        if (err != nil) {
-            fmt.Println(err)
-            time.Sleep(1)
-        }
-    }
+    connectDb()
     router.GET("/associations", getAsso)
     router.GET("/activites", getActivity)
     router.GET("/horaires", getTime)
+    router.GET("/horaires/:id", getTime_by_activity)
     router.Run("0.0.0.0:6969")
 }
