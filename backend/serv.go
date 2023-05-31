@@ -7,10 +7,9 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"github.com/go-sql-driver/mysql"
 )
 
@@ -28,11 +27,21 @@ type Time struct {
 }
 
 type Activi struct {
-    ID     int64    `json:"id"`
+    ID     int    `json:"id"`
     Name   string   `json:"name"`
     Desc   string   `json:"description"`
     Asso_Id int   `json:"asso"`
     Place   int     `json:"places"`
+}
+
+type JsonUser struct {
+    Id      int
+    Name    string  `json:"name"`
+    Surname string  `json:"surname"`
+}
+
+type Joke struct {
+    What string `json:"what"`
 }
 
 func getAsso(c *gin.Context) {
@@ -105,7 +114,6 @@ func getTime(c *gin.Context) {
     return
 }
 
-
 func getTime_by_activity(c *gin.Context) {
     var activity []Activi
     id, _:= strconv.Atoi(c.Param("id"))
@@ -162,8 +170,31 @@ func connectDb (){
     return
 }
 
+func see_user(c *gin.Context) {
+    var user []JsonUser
+
+    rows, err := db.Query("SELECT * FROM participant")
+    if err != nil {
+        return
+    }
+    defer rows.Close()
+    // Loop through rows, using Scan to assign column data to struct fields.
+    for rows.Next() {
+        var tmp JsonUser
+        if err := rows.Scan(&tmp.Id, &tmp.Name, &tmp.Surname); err != nil {
+            return
+        }
+        fmt.Println(tmp)
+        user = append(user, tmp)
+    }
+    if err := rows.Err(); err != nil {
+        return
+    }
+    c.IndentedJSON(http.StatusOK, user)
+    return
+}
+
 func main() {
-    time.Sleep(10)
     // gin.SetMode(gin.ReleaseMode)
     router := gin.Default()
     connectDb()
@@ -172,5 +203,81 @@ func main() {
     router.GET("/activites", getActivity)
     router.GET("/horaires", getTime)
     router.GET("/horaires/:id", getTime_by_activity)
+    router.POST("/register", register_user)
+    router.GET("/register", see_user)
+    router.GET("/mlp", teapot)
     router.Run("0.0.0.0:6969")
+}
+
+func teapot (c*gin.Context) {
+    var joke Joke
+    joke.What = "I'm a fucking teateapot"
+    c.String(http.StatusTeapot, "I'm a fucking teapot")
+}
+
+func search_user (name string, surname string) (int, error) {
+    var user []JsonUser
+
+    rows, err := db.Query("SELECT * FROM participant")
+    if err != nil {
+        return -1, err
+    }
+    defer rows.Close()
+    // Loop through rows, using Scan to assign column data to struct fields.
+    for rows.Next() {
+        var tmp JsonUser
+        if err := rows.Scan(&tmp.Id, &tmp.Name, &tmp.Surname); err != nil {
+            return -1, err
+        }
+        user = append(user, tmp)
+    }
+    if err := rows.Err(); err != nil {
+        return -1, err
+    }
+    fmt.Printf("search name %s -> search surname %s\n", name, surname)
+    for _, a := range user {
+    fmt.Printf("user name %s -> user surname %s\n", a.Name, a.Surname)
+        if a.Surname == name && a.Name == surname {
+            fmt.Println("ah bah fuck")
+            return 1, nil
+        }
+    }
+    return 0, nil
+}
+
+func register_user(c *gin.Context) {
+    var user JsonUser
+    err := c.BindJSON(&user)
+    if err != nil {
+        c.String(http.StatusBadRequest, "bad request bro")
+        return
+    }
+    fmt.Println("Weesh mon khey je suis la")
+    ret, err := search_user(user.Name, user.Surname)
+    fmt.Printf("Walha err %v\n", err)
+    if (ret != 0 || err != nil) {
+        if (ret == 1) {
+            c.String(http.StatusConflict, "already exist")
+            return
+        }
+        fmt.Println(err)
+        return
+    }
+    if id, err := add_user(user); id != 0 && err != nil {
+        c.String(http.StatusInternalServerError, "IDK too bro")
+        return
+    }
+    c.IndentedJSON(http.StatusCreated, user)
+}
+
+func add_user(user JsonUser) (int64, error) {
+    result, err := db.Exec("INSERT INTO participant (nom, prenom) VALUES (?, ?)", user.Surname, user.Name)
+    if err != nil {
+        return 0, fmt.Errorf("addUser: %v", err)
+    }
+    id, err := result.LastInsertId()
+    if err != nil {
+        return 0, fmt.Errorf("addUser: %v", err)
+    }
+    return id, nil
 }
