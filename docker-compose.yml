@@ -25,7 +25,6 @@ services:
           DBUSER: ${MYSQL_USER}
           DBPASS: ${MYSQL_PASSWORD}
           DATABASE: ${MYSQL_DATABASE}
-
     restart: always
     ports:
       - "6969:6969"
@@ -33,10 +32,13 @@ services:
       DATABASE: ${MYSQL_DATABASE}
       DBUSER: ${MYSQL_USER}
       DBPASS: ${MYSQL_PASSWORD}
+      VIRTUAL_HOST: "ja.mylittlepwnies.tech"
+      LETSENCRYPT_HOST: "ja.mylittlepwnies.tech"
+      VIRTUAL_PORT: 6969
     networks:
       - ja
     depends_on:
-        db
+      - db
 
 volumes:
   db_data:
