@@ -3,20 +3,21 @@ version: '3'
 services:
   db:
     image: mysql:latest
-    restart: always
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_HOST: '%'
     ports:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - .ssql.cnf:/etc/mysql/my.cnf
     networks:
       - ja
-    command: --default-authentication-plugin=mysql_native_password
 
   backend:
     build:
@@ -37,6 +38,7 @@ services:
       VIRTUAL_PORT: 6969
     networks:
       - ja
+      - ssl-project
     depends_on:
       - db
 
@@ -45,4 +47,6 @@ volumes:
 
 networks:
   ja:
-    external: false
+    external: true
+  ssl-project:
+    external: true
