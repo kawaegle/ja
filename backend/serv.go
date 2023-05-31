@@ -40,10 +40,6 @@ type JsonUser struct {
     Surname string  `json:"surname"`
 }
 
-type Joke struct {
-    What string `json:"what"`
-}
-
 func getAsso(c *gin.Context) {
     var asso []Asso
 
@@ -181,7 +177,7 @@ func see_user(c *gin.Context) {
     // Loop through rows, using Scan to assign column data to struct fields.
     for rows.Next() {
         var tmp JsonUser
-        if err := rows.Scan(&tmp.Id, &tmp.Name, &tmp.Surname); err != nil {
+        if err := rows.Scan(&tmp.Id, &tmp.Surname, &tmp.Name); err != nil {
             return
         }
         fmt.Println(tmp)
@@ -210,8 +206,6 @@ func main() {
 }
 
 func teapot (c*gin.Context) {
-    var joke Joke
-    joke.What = "I'm a fucking teateapot"
     c.String(http.StatusTeapot, "I'm a fucking teapot")
 }
 
@@ -234,10 +228,8 @@ func search_user (name string, surname string) (int, error) {
     if err := rows.Err(); err != nil {
         return -1, err
     }
-    fmt.Printf("search name %s -> search surname %s\n", name, surname)
     for _, a := range user {
-    fmt.Printf("user name %s -> user surname %s\n", a.Name, a.Surname)
-        if a.Surname == name && a.Name == surname {
+        if a.Surname == surname && a.Name == name {
             fmt.Println("ah bah fuck")
             return 1, nil
         }
@@ -252,9 +244,7 @@ func register_user(c *gin.Context) {
         c.String(http.StatusBadRequest, "bad request bro")
         return
     }
-    fmt.Println("Weesh mon khey je suis la")
     ret, err := search_user(user.Name, user.Surname)
-    fmt.Printf("Walha err %v\n", err)
     if (ret != 0 || err != nil) {
         if (ret == 1) {
             c.String(http.StatusConflict, "already exist")
@@ -271,7 +261,7 @@ func register_user(c *gin.Context) {
 }
 
 func add_user(user JsonUser) (int64, error) {
-    result, err := db.Exec("INSERT INTO participant (nom, prenom) VALUES (?, ?)", user.Surname, user.Name)
+    result, err := db.Exec("INSERT INTO participant (prenom, nom) VALUES (?, ?)", user.Name, user.Surname)
     if err != nil {
         return 0, fmt.Errorf("addUser: %v", err)
     }
