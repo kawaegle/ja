@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 	"github.com/go-sql-driver/mysql"
 )
 
@@ -166,6 +167,7 @@ func main() {
     // gin.SetMode(gin.ReleaseMode)
     router := gin.Default()
     connectDb()
+    router.Use(cors.Default())
     router.GET("/associations", getAsso)
     router.GET("/activites", getActivity)
     router.GET("/horaires", getTime)
