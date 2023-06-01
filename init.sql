@@ -29,14 +29,13 @@ CREATE TABLE horaire (
 
 CREATE TABLE participant (
   id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  nom VARCHAR(255) NOT NULL,
-  prenom VARCHAR(255) NOT NULL
+  name VARCHAR(255) NOT NULL,
+  surname VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE inscription (
   id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   participant_id INT NOT NULL,
-
   activite_id INT NOT NULL,
   FOREIGN KEY (participant_id) REFERENCES participant(id),
   FOREIGN KEY (activite_id) REFERENCES horaire(id)

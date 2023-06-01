@@ -40,6 +40,18 @@ type JsonUser struct {
     Surname string  `json:"surname"`
 }
 
+type Actreg struct {
+    Act_Id      int     `json:"id"`
+    Name        string  `json:"name"`
+    Surname     string  `json:"surname"`
+}
+
+type Acttmp struct {
+    Id      int
+    User_Id int `json:"user_id"`
+    Act_Id  int `json:"act_id"`
+}
+
 func getAsso(c *gin.Context) {
     var asso []Asso
 
@@ -177,10 +189,9 @@ func see_user(c *gin.Context) {
     // Loop through rows, using Scan to assign column data to struct fields.
     for rows.Next() {
         var tmp JsonUser
-        if err := rows.Scan(&tmp.Id, &tmp.Surname, &tmp.Name); err != nil {
+        if err := rows.Scan(&tmp.Id, &tmp.Name, &tmp.Surname); err != nil {
             return
         }
-        fmt.Println(tmp)
         user = append(user, tmp)
     }
     if err := rows.Err(); err != nil {
@@ -202,39 +213,84 @@ func main() {
     router.POST("/register", register_user)
     router.GET("/register", see_user)
     router.GET("/mlp", teapot)
+
+    router.POST("/act_register", register_act)
+    router.GET("/act_register/:id", see_register)
+
     router.Run("0.0.0.0:6969")
+}
+
+func see_register(c *gin.Context) {
+    var act []Acttmp
+    id, _:= strconv.Atoi(c.Param("id"))
+
+    rows, err := db.Query("SELECT * FROM inscription WHERE activite_id = ?", id)
+    if err != nil {
+        return
+    }
+    defer rows.Close()
+    // Loop through rows, using Scan to assign column data to struct fields.
+    for rows.Next() {
+        var tmp Acttmp
+        if err := rows.Scan(&tmp.Id, &tmp.User_Id, &tmp.Act_Id); err != nil {
+            return
+        }
+        act = append(act, tmp)
+    }
+    if err := rows.Err(); err != nil {
+        return
+    }
+    fmt.Println(act)
+    c.IndentedJSON(http.StatusOK, act)
+    return
+}
+
+func register_act (c *gin.Context) {
+    var act Actreg
+    err := c.BindJSON(&act)
+    if err != nil {
+        c.String(http.StatusBadRequest, "bad request bro")
+        return
+    }
+    _, id := search_user(act.Name, act.Surname)
+    if id, err := reg_user(id, act.Act_Id); id != 0 && err != nil {
+        c.String(http.StatusInternalServerError, "IDK too bro")
+        return
+    }
+    c.IndentedJSON(http.StatusCreated, act)
+}
+
+func reg_user(part_id int, act_id int)(int64, error) {
+    result, err := db.Exec("INSERT INTO inscription (participant_id, activite_id) VALUES (?, ?)", part_id, act_id)
+    if err != nil {
+        return 0, fmt.Errorf("addUser: %v", err)
+    }
+    id, err := result.LastInsertId()
+    if err != nil {
+        return 0, fmt.Errorf("addUser: %v", err)
+    }
+    return id, nil
 }
 
 func teapot (c*gin.Context) {
     c.String(http.StatusTeapot, "I'm a fucking teapot")
 }
 
-func search_user (name string, surname string) (int, error) {
-    var user []JsonUser
-
-    rows, err := db.Query("SELECT * FROM participant")
+func search_user (name string, surname string) (int, int) {
+    var count int
+    var user JsonUser
+    err := db.QueryRow("SELECT COUNT(*) FROM participant WHERE name = ? AND surname = ?", name, surname).Scan(&count)
     if err != nil {
-        return -1, err
+        log.Fatal(err)
     }
-    defer rows.Close()
-    // Loop through rows, using Scan to assign column data to struct fields.
-    for rows.Next() {
-        var tmp JsonUser
-        if err := rows.Scan(&tmp.Id, &tmp.Name, &tmp.Surname); err != nil {
-            return -1, err
+    if count != 0 {
+        err := db.QueryRow("SELECT * FROM participant WHERE name = ? AND surname = ?", name, surname).Scan(&user.Id, &user.Name, &user.Surname)
+        if err != nil {
+            log.Fatal(err)
         }
-        user = append(user, tmp)
+       return count, user.Id
     }
-    if err := rows.Err(); err != nil {
-        return -1, err
-    }
-    for _, a := range user {
-        if a.Surname == surname && a.Name == name {
-            fmt.Println("ah bah fuck")
-            return 1, nil
-        }
-    }
-    return 0, nil
+    return count, user.Id
 }
 
 func register_user(c *gin.Context) {
@@ -244,13 +300,12 @@ func register_user(c *gin.Context) {
         c.String(http.StatusBadRequest, "bad request bro")
         return
     }
-    ret, err := search_user(user.Name, user.Surname)
-    if (ret != 0 || err != nil) {
+    ret, _ := search_user(user.Name, user.Surname)
+    if (ret != 0) {
         if (ret == 1) {
             c.String(http.StatusConflict, "already exist")
             return
         }
-        fmt.Println(err)
         return
     }
     if id, err := add_user(user); id != 0 && err != nil {
@@ -261,7 +316,7 @@ func register_user(c *gin.Context) {
 }
 
 func add_user(user JsonUser) (int64, error) {
-    result, err := db.Exec("INSERT INTO participant (prenom, nom) VALUES (?, ?)", user.Name, user.Surname)
+    result, err := db.Exec("INSERT INTO participant (name, surname) VALUES (?, ?)", user.Name, user.Surname)
     if err != nil {
         return 0, fmt.Errorf("addUser: %v", err)
     }
