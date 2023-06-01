@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import './home.css';
 
 import { AiOutlineArrowDown } from "react-icons/ai";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Home = () => {
 
@@ -13,6 +15,7 @@ const Home = () => {
 
     const [name_current, setName] = useState(localStorage.getItem('name'));
     const [surname_current, setSurname] = useState(localStorage.getItem('surname'));
+
 
     const handleGetAsso = async () => {
         fetch("http://localhost:6969/associations")
@@ -62,9 +65,10 @@ const Home = () => {
     
         const responseJson = await response.json();
         console.log(responseJson);
+        if (responseJson) {
+            toast.success('Vous êtes inscrit à l\'activité !');
+        }
     }
-
-
 
     const disconnect = () => {
         localStorage.removeItem('isLogged');
@@ -98,8 +102,8 @@ const Home = () => {
                 Se déconnecter
             </button>
 
-            <button className="show_activities">
-                Voir mes activitées
+            <button className="show_activities" onClick={() => window.location.href = "/creneau"}>
+                Voir les créneaux
             </button>
 
             <div className="list_activities">
@@ -191,7 +195,7 @@ const Home = () => {
                     </p>
                 </div>
             </div>
-
+            <ToastContainer />
         </div>
     );
 }

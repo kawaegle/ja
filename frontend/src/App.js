@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/home/home';
 import NotFound from './pages/notFound/notFound';
 import Login from './pages/login/login';
+import Creneau from './pages/creneau/creneau';
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
                     )}
                     <Route path="*" element={<NotFound />} />
                     <Route path="/home" element={<Home />} />
+                    <Route path="/creneau" element={<Creneau />} />
                 </Routes>
             </BrowserRouter>
         </div>

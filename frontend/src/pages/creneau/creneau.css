@@ -1,0 +1,47 @@
+.acti {
+    background-color: #f2f2f2;
+    padding: 20px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.acti h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.acti h2 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.acti h3 {
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.horaire {
+    margin-top: 15px;
+}
+
+.horaire p {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.horaire p:first-child {
+    font-weight: bold;
+}
+
+.acti_box {
+    margin-top: 15px;
+    margin-bottom: 50px;
+}
+
+.acti_box h2 {
+    font-size: 28px;
+}
+
+.acti_box h3 {
+    font-size: 23px;
+}
