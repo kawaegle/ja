@@ -19,6 +19,22 @@ services:
     networks:
       - ja
 
+  frontend:
+    build:
+      context: ./frontend/
+    restart: always
+    ports:
+      - "8080:3000"
+    environment:
+      VIRTUAL_HOST: "ja.mylittlepwnies.tech"
+      LETSENCRYPT_HOST: "ja.mylittlepwnies.tech"
+      VIRTUAL_PORT: 8080
+    networks:
+      - ja
+      - ssl-project
+    depends_on:
+      - backend
+
   backend:
     build:
       context: ./backend/
