@@ -1,0 +1,272 @@
+.Home {
+    background-color: rgb(235, 235, 235);
+    min-height: 100vh;
+}
+
+.bar_home {
+    background-color: rgb(48, 63, 159);
+    height: 100px;
+    width: 100%;
+}
+
+.bar_home_center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: white;
+    font-family: 'roboto', sans-serif;
+}
+
+.presAsso {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: 'roboto', sans-serif;
+    background-color: rgb(255, 255, 255);
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 150px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(68, 68, 68, 0.103);
+}
+
+.presAsso h2 {
+    font-size: 20px;
+    width: 80%;
+    font-weight: 500;
+    color: black;
+    padding: 20px;
+}
+
+.content_list_asso {
+    width: 70%;
+    margin: 0 auto;
+    margin-top: 50px;
+}
+
+.asso_list {
+    margin-top: 30px;
+    margin-left: auto;
+    /* Ajoute de l'espace à gauche */
+    margin-right: auto;
+    /* Ajoute de l'espace à droite */
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+}
+
+.asso {
+    background-color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(68, 68, 68, 0.103);
+}
+
+.asso h3 {
+    font-size: 20px;
+    font-weight: 500;
+    color: black;
+}
+
+.asso p {
+    font-size: 15px;
+    font-weight: 400;
+    color: black;
+}
+
+.bienvenue {
+    text-align: center;
+    font-family: 'roboto', sans-serif;
+    background-color: red;
+    background: url('../../media/back.jpg') no-repeat;
+    padding: 30px 20px;
+    position: relative;
+    height: 200px;
+}
+
+.bienvenue h1 {
+    font-size: 50px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 20px;
+    margin-top: 30px;
+}
+
+.bienvenue h2 {
+    font-size: 25px;
+    font-weight: bold;
+    color: white;
+}
+
+.bienvenue p {
+    margin-top: 25px;
+    font-size: 20px;
+    font-weight: 400;
+    color: white;
+}
+
+.subtitle {
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+    margin-top: 20px;
+    text-align: center;
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+.footer {
+    margin-top: 50px;
+    text-align: center;
+    font-family: 'roboto', sans-serif;
+    background-color: red;
+    background: url('../../media/back.jpg') no-repeat;
+    padding: 30px 20px;
+    position: relative;
+    height: 100px;
+}
+
+.content_footer {
+    color: white;
+    font-family: 'roboto', sans-serif;
+    position: relative;
+    top: 10px;
+}
+
+.beside_footer {
+    margin-top: 20px;
+    color: white;
+    font-size: 10px;
+    position: relative;
+    top: 30px;
+}
+
+
+.list_activities {
+    width: 90%;
+    margin: 0 auto;
+    margin-top: 40px;
+}
+
+.list_activities h2 {
+    text-align: center;
+    margin-bottom: -20px;
+}
+
+.content_list_activities {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    justify-items: center;
+}
+
+.activite {
+    margin-top: 30px;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    padding: 5px;
+    text-align: center;
+    cursor: pointer;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.activite.expanded {
+    max-height: 2000px; /* Définissez une hauteur suffisamment grande pour afficher tous les détails */
+}
+
+.activite.expanded .activite_desc {
+    display: none;
+}
+
+.activite.expanded .activite_date {
+    display: block;
+}
+
+.activite_name {
+    margin-bottom: 10px;
+}
+
+.activite_name h3 {
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+}
+
+.down {
+    position: relative;
+    top: 10px;
+    font-size: 25px;
+    color: rgb(117, 149, 243);
+    cursor: pointer;
+}
+
+.activite_desc {
+    margin-bottom: 20px;
+}
+
+.activite_date {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+}
+
+.horaires {
+    margin-top: 10px;
+    border-top: 1px solid rgb(179, 179, 179);
+    padding-top: 10px;
+}
+
+.list_activities button {
+    background-color: rgb(117, 149, 243);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    color: white;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.list_activities button:hover {
+    background-color: rgb(48,63,159);
+}
+
+.show_activities {
+    display: flex;
+    text-align: center;
+    margin: 0 auto;
+    background-color: rgb(117, 149, 243);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    color: white;
+    font-weight: bold;
+    margin-top: 35px;
+    font-size: 20px;
+}
+
+
+.activite_desc {
+    display: none;
+}
+
+.activite.expanded .activite_desc {
+    display: block;
+}
+
+
+@media (max-width: 375px) {
+    .content_list_activities {
+        grid-template-columns: 1fr;
+    }
+}
