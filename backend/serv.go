@@ -293,7 +293,15 @@ func register_act (c *gin.Context) {
     c.IndentedJSON(http.StatusCreated, act)
 }
 
-func reg_user(part_id int, act_id int)(int64, error) {
+func reg_user(part_id int, act_id int, c*gin.Context)(int64, error) {
+    var exists int
+    err := db.QueryRow("SELECT EXISTS (SELECT 1 FROM inscription WHERE participant_id = ? AND activite_id = ?", part_id, act_id).Scan(&exists)
+    if err != nil {
+        log.Fatal(err)
+    }
+    if exists == 1 {
+        c.String(http.StatusInternalServerError, "Already register to this activity")
+    }
     result, err := db.Exec("INSERT INTO inscription (participant_id, activite_id) VALUES (?, ?)", part_id, act_id)
     if err != nil {
         return 0, fmt.Errorf("addUser: %v", err)
