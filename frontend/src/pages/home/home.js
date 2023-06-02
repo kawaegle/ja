@@ -45,30 +45,41 @@ const Home = () => {
     }
 
     const handleRegistActivity = async (id) => {
-
         const name = name_current;
         const surname = surname_current;
-
+    
         const data = {
             id,
             name,
             surname
         };
-
-        const response = await fetch("http://localhost:6969/act_register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
     
-        const responseJson = await response.json();
-        console.log(responseJson);
-        if (responseJson) {
-            toast.success('Vous êtes inscrit à l\'activité !');
+        try {
+            const response = await fetch("http://localhost:6969/act_register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+    
+            if (response.ok) {
+                const responseJson = await response.json();
+                console.log(responseJson);
+                toast.success('Vous êtes inscrit à l\'activité !');
+            } else {
+                if (response.status === 500) {
+                    toast.error('déja inscrit à cette activité');
+                } else {
+                    toast.error('Une erreur s\'est produite');
+                }
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error('Une erreur s\'est produite');
         }
     }
+    
 
     const disconnect = () => {
         localStorage.removeItem('isLogged');
@@ -97,10 +108,6 @@ const Home = () => {
             </div>
 
             <p className="subtitle">Inscrivez vous sur notre plateforme pour les différentes activitées du jour !</p>
-            
-            <button className="disconnect" onClick={disconnect}>
-                Se déconnecter
-            </button>
 
             <button className="show_activities" onClick={() => window.location.href = "/creneau"}>
                 Voir les créneaux
