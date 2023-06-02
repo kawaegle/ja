@@ -24,6 +24,7 @@ type Time struct {
     Activity_ID     int     `json:"activity_id"`
     Debut           string   `json:"debut"`
     Fin             string   `json:"fin"`
+    Place           int      `json:"place"`
 }
 
 type Activi struct {
@@ -245,6 +246,23 @@ func see_register(c *gin.Context) {
     return
 }
 
+func number_place(act int)(int, error) {
+    var place Time
+    var current int
+    err := db.QueryRow("SELECT * FROM participant WHERE activite_id = ?", act).Scan(&place.ID, &place.Activity_ID, &place.Debut, &place.Fin, &place.Place)
+    if err != nil {
+        return 0, err
+    }
+    err = db.QueryRow("SELECT COUNT(*) FROM horaire WHERE activite_id = ?", act).Scan(current)
+    if err != nil {
+        return 0, err
+    }
+    if current <= place.Place {
+        return 1, nil
+    }
+    return 0, nil
+}
+
 func register_act (c *gin.Context) {
     var act Actreg
     err := c.BindJSON(&act)
@@ -253,6 +271,15 @@ func register_act (c *gin.Context) {
         return
     }
     _, id := search_user(act.Name, act.Surname)
+    valid, num_err := number_place(act.Act_Id)
+    if valid == 0 {
+        if num_err != nil{
+            c.String(http.StatusInternalServerError, num_err.Error())
+            return
+        }
+        c.String(http.StatusInternalServerError, "too much people here")
+        return
+    }
     if id, err := reg_user(id, act.Act_Id); id != 0 && err != nil {
         c.String(http.StatusInternalServerError, "IDK too bro")
         return
