@@ -113,7 +113,6 @@ func getTime(c *gin.Context) {
         if err := rows.Scan(&tmp.ID, &tmp.Activity_ID, &tmp.Debut, &tmp.Fin); err != nil {
             return
         }
-        fmt.Println(tmp)
         time = append(time, tmp)
     }
     if err := rows.Err(); err != nil {
@@ -241,7 +240,6 @@ func see_register(c *gin.Context) {
     if err := rows.Err(); err != nil {
         return
     }
-    fmt.Println(act)
     c.IndentedJSON(http.StatusOK, act)
     return
 }
@@ -250,16 +248,18 @@ func number_place(horraire_ID int)(int, error) {
     var act Time
     var place Activi
     var current int
+    fmt.Printf("ID of horraire is %d\n", horraire_ID)
 
-    err := db.QueryRow("SELECT * FROM horaire WHERE activite_id = ?", horraire_ID).Scan(&act.ID, &act.Activity_ID, &act.Debut, &act.Fin)
+    err := db.QueryRow("SELECT * FROM horaire WHERE id = ?", horraire_ID).Scan(&act.ID, &act.Activity_ID, &act.Debut, &act.Fin)
     if err != nil {
         return 0, err
     }
-    err = db.QueryRow("SELECT * FROM activite WHERE activite_id = ?", act.Activity_ID).Scan(&place.ID, &place.Name, &place.Desc, &place.Asso_Id, &place.Place)
+    fmt.Printf("ID of activity is %d\n", act.Activity_ID)
+    err = db.QueryRow("SELECT * FROM activite WHERE id = ?", act.Activity_ID).Scan(&place.ID, &place.Name, &place.Desc, &place.Asso_Id, &place.Place)
     if err != nil {
         return 0, err
     }
-    err = db.QueryRow("SELECT COUNT(*) FROM inscription WHERE activite_id = ?", horraire_ID).Scan(current)
+    err = db.QueryRow("SELECT COUNT(*) FROM inscription WHERE activite_id = ?", horraire_ID).Scan(&current)
     if err != nil {
         return 0, err
     }
@@ -295,9 +295,8 @@ func register_act (c *gin.Context) {
 
 func reg_user(part_id int, act_id int, c*gin.Context)(int64, error) {
     var exists int
-    fmt.Println(part_id, act_id)
+    err := db.QueryRow("SELECT EXISTS (SELECT 1 FROM inscription WHERE participant_id = ? AND activite_id = ?)", part_id, act_id).Scan(&exists)
 
-    err := db.QueryRow("SELECT EXISTS (SELECT 1 FROM inscription WHERE participant_id = ? AND activite_id = ?", part_id, act_id).Scan(&exists)
     if err != nil {
         log.Fatal(err)
     }
