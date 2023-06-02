@@ -43,8 +43,12 @@ services:
       DATABASE: ${MYSQL_DATABASE}
       DBUSER: ${MYSQL_USER}
       DBPASS: ${MYSQL_PASSWORD}
+      VIRTUAL_PORT: 6969
+      VIRTUAL_HOST: japi.oppaiweeb.tech
+      LETSENCRYPT_HOST: japi.oppaiweeb.tech
     networks:
       - ja
+      - ssl-project
     depends_on:
       - db
 

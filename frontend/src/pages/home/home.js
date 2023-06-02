@@ -18,21 +18,21 @@ const Home = () => {
 
 
     const handleGetAsso = async () => {
-        fetch("http://localhost:6969/associations")
+        fetch("https://japi.oppaiweeb.tech/associations")
             .then((response) => response.json())
             .then((response) => setAsso(response))
             .catch((err) => console.log(err));
     };
 
     const handleGetHoraire = async () => {
-        fetch("http://localhost:6969/horaires")
+        fetch("https://japi.oppaiweeb.tech/horaires")
             .then((response) => response.json())
             .then((response) => setListHoraire(response))
             .catch((err) => console.log(err));
     };
 
     const handleGetActivite = async () => {
-        fetch("http://localhost:6969/activites")
+        fetch("https://japi.oppaiweeb.tech/activites")
             .then((response) => response.json())
             .then((response) => setListActivite(response))
             .catch((err) => console.log(err));
@@ -55,7 +55,7 @@ const Home = () => {
         };
     
         try {
-            const response = await fetch("http://localhost:6969/act_register", {
+            const response = await fetch("https://japi.oppaiweeb.tech/act_register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

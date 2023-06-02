@@ -14,7 +14,7 @@ function Creneau() {
 
 
     const handleGetRegister = async () => {
-        fetch("http://localhost:6969/register")
+        fetch("https://japi.oppaiweeb.tech/register")
             .then((response) => response.json())
             .then((response) => setRegisterList(response))
             .catch((err) => console.log(err));
@@ -22,28 +22,28 @@ function Creneau() {
 
 
     const handleGetAsso = async () => {
-        fetch("http://localhost:6969/associations")
+        fetch("https://japi.oppaiweeb.tech/associations")
             .then((response) => response.json())
             .then((response) => setAsso(response))
             .catch((err) => console.log(err));
     };
 
     const handleGetHoraire = async () => {
-        fetch("http://localhost:6969/horaires")
+        fetch("https://japi.oppaiweeb.tech/horaires")
             .then((response) => response.json())
             .then((response) => setListHoraire(response))
             .catch((err) => console.log(err));
     };
 
     const handleGetActivite = async () => {
-        fetch("http://localhost:6969/activites")
+        fetch("https://japi.oppaiweeb.tech/activites")
             .then((response) => response.json())
             .then((response) => setListActivite(response))
             .catch((err) => console.log(err));
     };
 
     const fetchActivite = async (id) => {
-        const response = await fetch(`http://localhost:6969/act_register/${id}`);
+        const response = await fetch(`https://japi.oppaiweeb.tech/act_register/${id}`);
         const data = await response.json();
         return data;
     };

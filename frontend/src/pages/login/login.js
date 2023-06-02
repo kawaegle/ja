@@ -15,7 +15,7 @@ function Login() {
             surname
         };
 
-        const response = await fetch("http://localhost:6969/register", {
+        const response = await fetch("https://japi.oppaiweeb.tech/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -302,6 +302,7 @@ func reg_user(part_id int, act_id int, c*gin.Context)(int64, error) {
     }
     if exists == 1 {
         c.String(http.StatusInternalServerError, "Already register to this activity")
+        return
     }
     result, err := db.Exec("INSERT INTO inscription (participant_id, activite_id) VALUES (?, ?)", part_id, act_id)
     if err != nil {
