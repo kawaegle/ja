@@ -24,7 +24,7 @@ type Time struct {
     Activity_ID     int     `json:"activity_id"`
     Debut           string   `json:"debut"`
     Fin             string   `json:"fin"`
-    Place           int      `json:"place"`
+    // Place           int      `json:"place"`
 }
 
 type Activi struct {
@@ -246,14 +246,20 @@ func see_register(c *gin.Context) {
     return
 }
 
-func number_place(act int)(int, error) {
-    var place Time
+func number_place(horraire_ID int)(int, error) {
+    var act Time
+    var place Activi
     var current int
-    err := db.QueryRow("SELECT * FROM participant WHERE activite_id = ?", act).Scan(&place.ID, &place.Activity_ID, &place.Debut, &place.Fin, &place.Place)
+
+    err := db.QueryRow("SELECT * FROM horraire WHERE activite_id = ?", horraire_ID).Scan(&act.ID, &act.Activity_ID, &act.Debut, &act.Fin)
     if err != nil {
         return 0, err
     }
-    err = db.QueryRow("SELECT COUNT(*) FROM horaire WHERE activite_id = ?", act).Scan(current)
+    err = db.QueryRow("SELECT * FROM activite WHERE activite_id = ?", act.Activity_ID).Scan(&place.ID, &place.Name, &place.Desc, &place.Asso_Id, &place.Place)
+    if err != nil {
+        return 0, err
+    }
+    err = db.QueryRow("SELECT COUNT(*) FROM inscription WHERE activite_id = ?", horraire_ID).Scan(current)
     if err != nil {
         return 0, err
     }
