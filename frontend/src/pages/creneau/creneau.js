@@ -66,6 +66,12 @@ function Creneau() {
         fetchAllActivites();
     }, []);
 
+    const formatHoraire = (horaire) => {
+        const [datePart, timePart] = horaire.split(' ');
+        const [hour, minute] = timePart.split(':');
+        return `${hour}h${minute}`;
+    }
+
     return (
         <div className='creneau'>
             <div className="bienvenue">
@@ -92,7 +98,7 @@ function Creneau() {
 
                                 return (
                                     <div className='horaire' key={horaire.id}>
-                                        <p>{horaire.debut}</p>
+                                        <p>{formatHoraire(horaire.debut)}</p>
                                         {filteredActivites.map((activiteHoraire) => (
                                             <div key={activiteHoraire.Id}>
                                                 {activiteHoraire.map((activite) => (
@@ -103,7 +109,7 @@ function Creneau() {
                                                                     <div>
                                                                         {console.log(register)}
                                                                         {register.Id === activite.user_id ? (
-                                                                            <p>{register.name}, {register.surname}</p>
+                                                                            <p>{register.name} {register.surname}</p>
                                                                         ) : (
                                                                             <p></p>
                                                                         )}

@@ -43,7 +43,7 @@ CREATE TABLE inscription (
 
 INSERT INTO association (nom, description)
 VALUES
-    ("MyLittlePwnies", "association de cybersecurité"),
+    ("MyLittlePwnies", "association de cybersecurite"),
     ("RacconBreaker", "BDE"),
     ("AJCALNN", "association des joueurs compulsif au loisir non numerique"),
     ("EpiTranspi", "association de sport"),
@@ -54,11 +54,11 @@ VALUES
 INSERT INTO activite (nom, description, association_id, places)
 VALUES
     ("CTF", "capture the flag", 1, 12),
-    ("Nerf", "Battaile de nerf", 2, 12),
-    ("Jeu de rôle", "association des joueurs compulsif au loisir non numerique", 3, 6),
-    ("tournois", "association de sport", 4, 8),
-    ("PS4 switch", "competitions de jeux video", 5, 12),
-    ("quizz", "quizz de culture pop", 6, 20);
+    ("Nerf", "Battaile de nerf", 2, 30),
+    ("Escape game (CHTULHU)", "Venez faire un escape game sur le theme de chtulhu", 3, 6),
+    ("tournois de ping-pong", "association de sport", 4, 8),
+    ("PS4 switch", "duel sur differents jeux videos", 5, 12),
+    ("quizz, blindtest et pixel art", "la pop c'est cool", 6, 20);
 
 -- Insertion des horaires
 INSERT INTO horaire (activite_id, debut, fin)
@@ -83,3 +83,22 @@ VALUES
     (6, '2023-05-29 13:00:00', '2023-05-29 14:00:00'),
     (6, '2023-05-29 14:00:00', '2023-05-29 15:00:00'),
     (6, '2023-05-29 15:00:00', '2023-05-29 16:00:00');
+
+
+INSERT INTO inscription (participant_id, activite_id)
+VALUES
+    (1, 1),
+    (1, 2),
+    (1, 3),
+    (1, 4),
+    (1, 5),
+    (1, 6),
+    (1, 7),
+    (1, 8),
+    (1, 9),
+    (1, 10),
+    (1, 11),
+    (1, 12),
+    (1, 13),
+    (1, 14),
+    (1, 15);

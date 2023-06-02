@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './login.css';
+
 function Login() {
 
     const handleRegister = async (e) => {
@@ -33,14 +35,14 @@ function Login() {
     };
 
     return (
-        <div>
-            <h1>Page de connexion</h1>
-            <form onSubmit={(e) => handleRegister(e)}>
-                <label htmlFor="name">prénom</label>
-                <input type="text" name="name" id="name" />
+        <div className='login'>
+            <h1 className='titile_login'>JA Epitech Nancy</h1>
+            <form className='form' onSubmit={(e) => handleRegister(e)}>
+                <h2>Entrez vos informations :</h2>
 
-                <label htmlFor="surname">nom de famille</label>
-                <input type="text" name="surname" id="surname" />
+                <input type="text" name="name" id="name" placeholder='prénom' />
+
+                <input type="text" name="surname" id="surname" placeholder='nom de famille' />
 
                 <button>Se connecter</button>
             </form>

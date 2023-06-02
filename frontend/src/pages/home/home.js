@@ -97,10 +97,6 @@ const Home = () => {
             </div>
 
             <p className="subtitle">Inscrivez vous sur notre plateforme pour les différentes activitées du jour !</p>
-            
-            <button className="disconnect" onClick={disconnect}>
-                Se déconnecter
-            </button>
 
             <button className="show_activities" onClick={() => window.location.href = "/creneau"}>
                 Voir les créneaux
