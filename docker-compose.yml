@@ -31,7 +31,6 @@ services:
       VIRTUAL_PORT: 8080
     networks:
       - ja
-      - ssl-project
     depends_on:
       - backend
 
@@ -54,7 +53,6 @@ services:
       VIRTUAL_PORT: 6969
     networks:
       - ja
-      - ssl-project
     depends_on:
       - db
 
@@ -63,6 +61,4 @@ volumes:
 
 networks:
   ja:
-    external: true
-  ssl-project:
     external: true

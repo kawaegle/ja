@@ -251,7 +251,7 @@ func number_place(horraire_ID int)(int, error) {
     var place Activi
     var current int
 
-    err := db.QueryRow("SELECT * FROM horraire WHERE activite_id = ?", horraire_ID).Scan(&act.ID, &act.Activity_ID, &act.Debut, &act.Fin)
+    err := db.QueryRow("SELECT * FROM horaire WHERE activite_id = ?", horraire_ID).Scan(&act.ID, &act.Activity_ID, &act.Debut, &act.Fin)
     if err != nil {
         return 0, err
     }
@@ -286,7 +286,7 @@ func register_act (c *gin.Context) {
         c.String(http.StatusInternalServerError, "too much people here")
         return
     }
-    if id, err := reg_user(id, act.Act_Id); id != 0 && err != nil {
+    if id, err := reg_user(id, act.Act_Id,c); id != 0 && err != nil {
         c.String(http.StatusInternalServerError, "IDK too bro")
         return
     }
@@ -295,6 +295,8 @@ func register_act (c *gin.Context) {
 
 func reg_user(part_id int, act_id int, c*gin.Context)(int64, error) {
     var exists int
+    fmt.Println(part_id, act_id)
+
     err := db.QueryRow("SELECT EXISTS (SELECT 1 FROM inscription WHERE participant_id = ? AND activite_id = ?", part_id, act_id).Scan(&exists)
     if err != nil {
         log.Fatal(err)
